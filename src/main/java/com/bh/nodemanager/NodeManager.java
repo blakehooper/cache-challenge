@@ -8,4 +8,5 @@ public interface NodeManager {
 
     void addNode(NodeDefinition nodeDefinition);
     void removeNode(NodeDefinition nodeDefinition);
+    void nodeShuttingDown(NodeDefinition nodeDefinition);
 }

@@ -31,4 +31,9 @@ public class NodeEventHandlerImpl implements NodeEventHandler {
     public void nodeRemoved(NodeDefinition node) {
         nodeManager.removeNode(node);
     }
+
+    @Override
+    public void nodeShuttingDown(NodeDefinition node) {
+        nodeManager.nodeShuttingDown(node);
+    }
 }

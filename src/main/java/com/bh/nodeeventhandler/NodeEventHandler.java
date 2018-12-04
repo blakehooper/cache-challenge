@@ -12,5 +12,11 @@ public interface NodeEventHandler {
 
     void nodeAdded(NodeDefinition node);
 
+    /**
+     * Please use the graceful version "nodeShuttingDown"
+     */
+    @Deprecated()
     void nodeRemoved(NodeDefinition node);
+
+    void nodeShuttingDown(NodeDefinition node);
 }

@@ -69,6 +69,20 @@ public class NodeManagerImpl implements NodeManager {
         });
     }
 
+    @Override
+    public void nodeShuttingDown(NodeDefinition nodeDefinition) {
+        IntStream.range(0, numberOfReplications).forEach(replication -> {
+            BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
+            NodeProxy nodeToClose = availableNodes.get(positionForKey);
+            availableNodes.remove(positionForKey);
+            nodeToClose.listKeys().forEach(key -> {
+                String value = nodeToClose.retrieve(key);
+                NodeProxy updateNode = findNodeForKey(key);
+                updateNode.cache(key, value);
+            });
+        });
+    }
+
     public void initialNodes(List<NodeDefinition> nodeDefinitions) {
         nodeDefinitions.forEach(this::addNode);
     }
