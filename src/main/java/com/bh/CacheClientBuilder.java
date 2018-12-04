@@ -19,14 +19,15 @@ public class CacheClientBuilder {
 
     static NodeManager buildNodeManager(List<NodeDefinition> definitions) {
         NodeManager nodeManager = new NodeManager();
-        definitions.forEach(nodeManager::addNode);
+        nodeManager.initialNodes(definitions);
         return nodeManager;
     }
 
     // Basic configuration
     static List<NodeDefinition> loadDefaultNodeConfig() {
         List<NodeDefinition> definitions = new ArrayList<>();
-        definitions.add(new NodeDefinition(UUID.randomUUID(), "hostname", 8080, NodeType.LOCAL));
+        definitions.add(new NodeDefinition(UUID.randomUUID(), "cache-node-0", 8080, NodeType.LOCAL));
+        definitions.add(new NodeDefinition(UUID.randomUUID(), "cache-node-1", 8080, NodeType.LOCAL));
         return definitions;
     }
 }
