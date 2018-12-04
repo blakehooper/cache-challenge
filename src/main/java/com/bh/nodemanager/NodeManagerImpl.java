@@ -12,8 +12,24 @@ import java.util.*;
 import java.util.stream.IntStream;
 
 public class NodeManagerImpl implements NodeManager {
-    Map<BigDecimal, NodeProxy> availableNodes = new TreeMap<>();
-    Integer numberOfReplications = 2;
+    private Map<BigDecimal, NodeProxy> availableNodes = new TreeMap<>();
+    private Integer numberOfReplications = 2;
+
+    public Map<BigDecimal, NodeProxy> getAvailableNodes() {
+        return availableNodes;
+    }
+
+    public void setAvailableNodes(Map<BigDecimal, NodeProxy> availableNodes) {
+        this.availableNodes = availableNodes;
+    }
+
+    public Integer getNumberOfReplications() {
+        return numberOfReplications;
+    }
+
+    public void setNumberOfReplications(Integer numberOfReplications) {
+        this.numberOfReplications = numberOfReplications;
+    }
 
     @Override
     public NodeProxy findNode(String key) {
@@ -33,6 +49,14 @@ public class NodeManagerImpl implements NodeManager {
         }
     }
 
+    @Override
+    public void removeNode(NodeDefinition nodeDefinition) {
+        IntStream.range(0, numberOfReplications).forEach(replication -> {
+            BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
+            availableNodes.remove(positionForKey);
+        });
+    }
+
     public void initialNodes(List<NodeDefinition> nodeDefinitions) {
         nodeDefinitions.forEach(this::addNode);
     }
@@ -42,16 +66,9 @@ public class NodeManagerImpl implements NodeManager {
     }
 
     private void addPositionsWithReplications(NodeDefinition nodeDefinition, NodeProxy proxy) {
-        IntStream.range(0, numberOfReplications - 1).forEach(replication -> {
+        IntStream.range(0, numberOfReplications).forEach(replication -> {
             BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
             availableNodes.put(positionForKey, proxy);
-        });
-    }
-
-    public void removeNode(NodeDefinition nodeDefinition) {
-        IntStream.range(0, numberOfReplications - 1).forEach(replication -> {
-            BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
-            availableNodes.remove(positionForKey);
         });
     }
 

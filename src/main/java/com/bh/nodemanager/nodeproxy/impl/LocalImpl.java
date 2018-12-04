@@ -19,13 +19,6 @@ public class LocalImpl implements NodeProxy {
         this.nodeDefinition = nodeDefinition;
     }
 
-    public HashMap<String, String> getMemStore() {
-        return memStore;
-    }
-
-    public void setMemStore(HashMap<String, String> memStore) {
-        this.memStore = memStore;
-    }
 
     @Override
     public void cache(String key, String value) {
