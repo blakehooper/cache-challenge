@@ -4,6 +4,7 @@ import com.bh.model.NodeDefinition;
 import com.bh.nodemanager.nodeproxy.NodeProxy;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class RedisImpl implements NodeProxy {
 
@@ -33,5 +34,10 @@ public class RedisImpl implements NodeProxy {
     @Override
     public String retrieve(String key) {
         return memStore.get(key);
+    }
+
+    @Override
+    public Set<String> listKeys() {
+        return memStore.keySet();
     }
 }

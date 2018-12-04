@@ -81,7 +81,52 @@ public class NodeManagerImpl implements NodeManager {
         IntStream.range(0, numberOfReplications).forEach(replication -> {
             BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
             availableNodes.put(positionForKey, proxy);
+            rebalanceForAddedNode(positionForKey);
         });
+    }
+
+    private void rebalanceForAddedNode(BigDecimal addedKey) {
+        // Natural order guarenteed by using TreeSet
+        List<BigDecimal> orderedKeyList = new ArrayList<>(availableNodes.keySet());
+
+        // First node added
+        if (orderedKeyList.size() == 0) {
+            // Do nothing
+            return;
+        }
+
+        int nodeIndexToRebalance = findIndexToRebalance(orderedKeyList, addedKey);
+        rebalanceNode(orderedKeyList.get(nodeIndexToRebalance), addedKey);
+    }
+
+    private void rebalanceNode(BigDecimal existingKey, BigDecimal addedKey) {
+        NodeProxy existingNode = availableNodes.get(existingKey);
+        NodeProxy addedNode = availableNodes.get(addedKey);
+
+        Set<String> existingSet = existingNode.listKeys();
+        existingSet.stream().forEach(key -> {
+
+            // The key needs to be moved
+            if (findNode(key).equals(addedNode)) {
+                String value = existingNode.retrieve(key);
+                addedNode.cache(key, value);
+
+                existingNode.invalidate(key);
+            };
+        });
+    }
+
+    private int findIndexToRebalance(List<BigDecimal> orderedKeyList, BigDecimal addedKey) {
+
+        int addedKeyIndex = orderedKeyList.indexOf(addedKey);
+
+        // Exception case for inserted at first position
+
+        if (addedKeyIndex == 0) {
+            return orderedKeyList.size() -1;
+        } else {
+            return addedKeyIndex - 1;
+        }
     }
 
     private BigDecimal findPositionForKey(String key) {
