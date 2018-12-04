@@ -18,6 +18,7 @@ public class DistributedCacheBuilder {
     static DistributedCacheBuilder instance;
 
     CacheClient cacheClient;
+    NodeManager nodeManager;
     NodeEventHandler nodeEventHandler;
 
     protected DistributedCacheBuilder() {
@@ -34,14 +35,21 @@ public class DistributedCacheBuilder {
         return instance;
     }
 
-    CacheClient getCacheClient() {
+    public CacheClient getCacheClient() {
         if (cacheClient == null) {
             init();
         }
         return cacheClient;
     }
 
-    NodeEventHandler getNodeEventHandler() {
+    public NodeManager getNodeManager() {
+        if (nodeManager == null) {
+            init();
+        }
+        return nodeManager;
+    }
+
+    public NodeEventHandler getNodeEventHandler() {
         if (nodeEventHandler == null) {
             init();
         }
@@ -50,13 +58,14 @@ public class DistributedCacheBuilder {
 
     protected void init() {
         NodeManager nodeManager = buildNodeManager(loadDefaultNodeConfig());
+        this.nodeManager = nodeManager;
         CacheClient cacheClient = new CacheClientImpl(nodeManager);
         this.cacheClient = cacheClient;
-        NodeEventHandler nodeEventHandler = new NodeEventHandlerImpl(cacheClient);
+        NodeEventHandler nodeEventHandler = new NodeEventHandlerImpl(nodeManager);
         this.nodeEventHandler = nodeEventHandler;
     }
 
-    protected NodeManager buildNodeManager(List<NodeDefinition> definitions) {
+    protected com.bh.nodemanager.NodeManager buildNodeManager(List<NodeDefinition> definitions) {
         NodeManagerImpl nodeManager = new NodeManagerImpl();
         nodeManager.initialNodes(definitions);
         return nodeManager;
@@ -65,8 +74,8 @@ public class DistributedCacheBuilder {
     // Basic configuration
     protected List<NodeDefinition> loadDefaultNodeConfig() {
         List<NodeDefinition> definitions = new ArrayList<>();
-        definitions.add(new NodeDefinition(UUID.randomUUID(), "cache-node-0", 8080, NodeType.LOCAL));
-        definitions.add(new NodeDefinition(UUID.randomUUID(), "cache-node-1", 8080, NodeType.LOCAL));
+        definitions.add(new NodeDefinition(UUID.randomUUID(), "cache-node", 8080, NodeType.LOCAL));
+        definitions.add(new NodeDefinition(UUID.randomUUID(), "other-node", 8080, NodeType.LOCAL));
         return definitions;
     }
 }

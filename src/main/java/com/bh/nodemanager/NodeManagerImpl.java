@@ -9,27 +9,49 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class NodeManagerImpl implements NodeManager {
     Map<BigDecimal, NodeProxy> availableNodes = new TreeMap<>();
+    Integer numberOfReplications = 2;
 
     @Override
     public NodeProxy findNode(String key) {
         return findNodeForKey(key);
     }
 
+    @Override
+    public void addNode(NodeDefinition nodeDefinition) {
+        switch (nodeDefinition.getType()) {
+            case LOCAL:
+                LocalImpl localImpl = new LocalImpl();
+                localImpl.setNodeDefinition(nodeDefinition);
+                addPositionsWithReplications(nodeDefinition, localImpl);
+                break;
+            default:
+                throw new UnsupportedOperationException();
+        }
+    }
+
     public void initialNodes(List<NodeDefinition> nodeDefinitions) {
-        nodeDefinitions.forEach( nodeDefinition -> {
-            switch(nodeDefinition.getType()) {
-                case LOCAL:
-                    LocalImpl localImpl = new LocalImpl();
-                    localImpl.setNodeDefinition(nodeDefinition);
-                    BigDecimal positionForKey = findPositionForKey(nodeDefinition.getNodeId().toString());
-                    availableNodes.put(positionForKey, localImpl);
-                    break;
-                default:
-                    throw new UnsupportedOperationException();
-            }
+        nodeDefinitions.forEach(this::addNode);
+    }
+
+    private String buildNodeKey(String hostname, int replicationNumber) {
+        return hostname + "_" + replicationNumber;
+    }
+
+    private void addPositionsWithReplications(NodeDefinition nodeDefinition, NodeProxy proxy) {
+        IntStream.range(0, numberOfReplications - 1).forEach(replication -> {
+            BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
+            availableNodes.put(positionForKey, proxy);
+        });
+    }
+
+    public void removeNode(NodeDefinition nodeDefinition) {
+        IntStream.range(0, numberOfReplications - 1).forEach(replication -> {
+            BigDecimal positionForKey = findPositionForKey(buildNodeKey(nodeDefinition.getHostname(), replication));
+            availableNodes.remove(positionForKey);
         });
     }
 

@@ -1,6 +1,6 @@
-package com.bh;
+package com.bh.cacheclient;
 
-import com.bh.cacheclient.CacheClient;
+import com.bh.DistributedCacheBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
