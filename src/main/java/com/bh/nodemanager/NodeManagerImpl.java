@@ -172,23 +172,25 @@ public class NodeManagerImpl implements NodeManager {
 
         // Natural order guarenteed by using TreeSet
         List<BigDecimal> orderedKeyList = new ArrayList<>(availableNodes.keySet());
+
+        // No nodes in list
+        if (orderedKeyList.size() == 0) {
+            throw new RuntimeException("No available nodes");
+        }
+
         int searchResult = Collections.binarySearch(orderedKeyList, positionForKey);
 
 
-        // The binary search function returns the actual bucket index
-        // in the case of an exact match. While it is unlikely to resolve to a used positionForKey,
+        // The binary search function returns the actual bucket index in the case of an exact match.
+        // While it is unlikely to resolve to a used positionForKey,
         // it's much more likely than a pure hash function with odds of 1 / 1,000,000
         // So I thought i'd guard against it
+        // https://docs.oracle.com/javase/8/docs/api/java/util/Collections.html#binarySearch-java.util.List-T-
         int index;
         if (searchResult >= 0) {
             index = searchResult;
         } else {
             index = Math.abs(searchResult) - 1;
-        }
-
-        // No nodes in list
-        if (index == 0) {
-            throw new RuntimeException("No available nodes");
         }
 
         // Back to start of circle

@@ -19,7 +19,6 @@ public class CacheClientImpl implements CacheClient {
             nodeManager.removeNode(proxy.getNodeDefinition());
             this.cache(key, value);
         }
-
     }
 
     @Override
