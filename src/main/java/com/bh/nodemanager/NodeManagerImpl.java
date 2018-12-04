@@ -1,8 +1,8 @@
-package com.bh;
+package com.bh.nodemanager;
 
 import com.bh.model.NodeDefinition;
-import com.bh.nodeproxy.NodeProxy;
-import com.bh.nodeproxy.impl.LocalImpl;
+import com.bh.nodemanager.nodeproxy.NodeProxy;
+import com.bh.nodemanager.nodeproxy.impl.LocalImpl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -10,9 +10,10 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-public class NodeManager {
+public class NodeManagerImpl implements NodeManager {
     Map<BigDecimal, NodeProxy> availableNodes = new TreeMap<>();
 
+    @Override
     public NodeProxy findNode(String key) {
         return findNodeForKey(key);
     }

@@ -1,7 +1,7 @@
-package com.bh.nodeproxy.impl;
+package com.bh.nodemanager.nodeproxy.impl;
 
 import com.bh.model.NodeDefinition;
-import com.bh.nodeproxy.NodeProxy;
+import com.bh.nodemanager.nodeproxy.NodeProxy;
 
 import java.util.HashMap;
 

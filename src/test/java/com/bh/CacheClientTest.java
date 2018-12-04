@@ -1,5 +1,7 @@
 package com.bh;
 
+import com.bh.cacheclient.CacheClient;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,11 +10,18 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class CacheClientTest {
 
+    private static DistributedCacheBuilder distributedCacheBuilder;
+
     private CacheClient cacheClient;
+
+    @BeforeAll
+    static void setUpOnce() {
+        distributedCacheBuilder = DistributedCacheBuilder.getInstance();
+    }
 
     @BeforeEach
     void setUp() {
-        cacheClient = CacheClientBuilder.buildCacheClient();
+        cacheClient = distributedCacheBuilder.getCacheClient();
     }
 
     @DisplayName("Smoke spec")
