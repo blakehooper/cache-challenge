@@ -3,6 +3,8 @@ package com.bh.nodemanager;
 import com.bh.model.NodeDefinition;
 import com.bh.nodemanager.nodeproxy.NodeProxy;
 import com.bh.nodemanager.nodeproxy.impl.LocalImpl;
+import com.bh.nodemanager.nodeproxy.impl.MemcacheImpl;
+import com.bh.nodemanager.nodeproxy.impl.RedisImpl;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -43,6 +45,16 @@ public class NodeManagerImpl implements NodeManager {
                 LocalImpl localImpl = new LocalImpl();
                 localImpl.setNodeDefinition(nodeDefinition);
                 addPositionsWithReplications(nodeDefinition, localImpl);
+                break;
+            case REDIS:
+                RedisImpl redisImpl = new RedisImpl();
+                redisImpl.setNodeDefinition(nodeDefinition);
+                addPositionsWithReplications(nodeDefinition, redisImpl);
+                break;
+            case MEMCACHED:
+                MemcacheImpl memcacheImpl = new MemcacheImpl();
+                memcacheImpl.setNodeDefinition(nodeDefinition);
+                addPositionsWithReplications(nodeDefinition, memcacheImpl);
                 break;
             default:
                 throw new UnsupportedOperationException();
