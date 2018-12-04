@@ -38,7 +38,7 @@ public class NodeManagerImpl implements NodeManager {
         try {
             m = MessageDigest.getInstance("MD5");
         } catch (NoSuchAlgorithmException e) {
-            // Would normally throw a custom exception to propigate to users of this client
+            // Would normally throw a custom exception to propagate to users of this client
             // log.error
             throw new RuntimeException();
         }
