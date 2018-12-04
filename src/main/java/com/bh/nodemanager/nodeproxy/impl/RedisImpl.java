@@ -40,4 +40,9 @@ public class RedisImpl implements NodeProxy {
     public Set<String> listKeys() {
         return memStore.keySet();
     }
+
+    @Override
+    public boolean isAlive() {
+        return true;
+    }
 }

@@ -11,4 +11,6 @@ public interface NodeProxy {
     String retrieve(String key);
 
     Set<String> listKeys();
+
+    boolean isAlive();
 }

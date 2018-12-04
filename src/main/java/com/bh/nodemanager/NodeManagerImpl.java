@@ -175,7 +175,7 @@ public class NodeManagerImpl implements NodeManager {
         int searchResult = Collections.binarySearch(orderedKeyList, positionForKey);
 
 
-        // Just to explain this gem, the binary search function returns the actual bucket index
+        // The binary search function returns the actual bucket index
         // in the case of an exact match. While it is unlikely to resolve to a used positionForKey,
         // it's much more likely than a pure hash function with odds of 1 / 1,000,000
         // So I thought i'd guard against it
@@ -184,6 +184,11 @@ public class NodeManagerImpl implements NodeManager {
             index = searchResult;
         } else {
             index = Math.abs(searchResult) - 1;
+        }
+
+        // No nodes in list
+        if (index == 0) {
+            throw new RuntimeException("No available nodes");
         }
 
         // Back to start of circle

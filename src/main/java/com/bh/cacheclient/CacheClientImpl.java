@@ -13,19 +13,34 @@ public class CacheClientImpl implements CacheClient {
     @Override
     public void cache(String key, String value) {
         NodeProxy proxy = nodeManager.findNode(key);
-        proxy.cache(key, value);
+        if (proxy.isAlive()) {
+            proxy.cache(key, value);
+        } else {
+            nodeManager.removeNode(proxy.getNodeDefinition());
+            this.cache(key, value);
+        }
+
     }
 
     @Override
     public void invalidate(String key) {
         NodeProxy proxy = nodeManager.findNode(key);
-        proxy.invalidate(key);
+        if (proxy.isAlive()) {
+            proxy.invalidate(key);
+        } else {
+            nodeManager.removeNode(proxy.getNodeDefinition());
+            this.invalidate(key);
+        }
     }
 
     @Override
     public String retrieve(String key) {
         NodeProxy proxy = nodeManager.findNode(key);
-        return proxy.retrieve(key);
+        if (proxy.isAlive()) {
+            return proxy.retrieve(key);
+        }
+        // Cache miss
+        return null;
     }
 
 }
